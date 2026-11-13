@@ -18,7 +18,7 @@ public class Calculator {
 
         Calculator calc = new Calculator();
 
-        System.out.println("--- Simple Calculator Execution ---");
+        System.out.println("--- Simple Calculator  ---");
 
         System.out.println("Addition (5 + 3): " + calc.add(5, 3));
 
