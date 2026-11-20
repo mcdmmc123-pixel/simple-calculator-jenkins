@@ -1,90 +1,46 @@
-<<<<<<< HEAD
-pipeline {
-    agent any
-    
-    
-    // Use tools Name configured in Jenkins
-    tools {
-        jdk 'JDK 25'
-        maven 'Maven-3.10'
-    }
-
-
-    stages {
-        stage('SCM Synchronization') {
-            steps {
-                echo '📥 Pulling latest code changes from Git repository...'
-=======
 
 pipeline {
-
     agent any
 
     stages {
 
         stage('SCM Synchronization') {
             steps {
-                echo 'Pulling latest code changes from Git repository...'
-
->>>>>>> ffa35bb85d574d5d70560d8f68eaeea77a6ee381
+                echo 'Pulling latest code from GitHub...'
                 checkout scm
             }
         }
 
         stage('Static Verification') {
             steps {
-<<<<<<< HEAD
-                echo '🔍 Checking Maven project layout rules...'
-=======
-                echo 'Checking Maven project layout rules...'
-
->>>>>>> ffa35bb85d574d5d70560d8f68eaeea77a6ee381
+                echo 'Validating Maven project...'
                 bat 'mvn validate'
             }
         }
 
         stage('Compilation & Automated Testing') {
             steps {
-<<<<<<< HEAD
-                echo '⚙️ Compiling class layers and verifying test logic stability...'
-                bat 'mvn clean package'
-            }
-            post {
-                always {
-                    echo '📊 Publishing Unit Test trends to Jenkins Dashboard...'
-=======
-                echo 'Compiling class layers and verifying test logic stability...'
-
+                echo 'Compiling Java code and running JUnit tests...'
                 bat 'mvn clean package'
             }
 
             post {
                 always {
-                    echo 'Publishing Unit Test trends to Jenkins Dashboard...'
-
->>>>>>> ffa35bb85d574d5d70560d8f68eaeea77a6ee381
-                    junit '**/target/surefire-reports/*.xml'
+                    echo 'Publishing JUnit test results...'
+                    junit allowEmptyResults: true,
+                          testResults: '**/target/surefire-reports/*.xml'
                 }
             }
         }
     }
 
     post {
-<<<<<<< HEAD
         success {
-            echo '✅ CI Pipeline completed flawlessly! Code stability confirmed.'
-        }
-        failure {
-            echo '❌ CI Pipeline broken. Check console logs for build failures or breaking test regressions.'
-=======
-
-        success {
-            echo 'CI Pipeline completed flawlessly! Code stability confirmed.'
+            echo 'CI Pipeline completed successfully!'
         }
 
         failure {
-            echo 'CI Pipeline broken. Check console logs for build failures or test regressions.'
->>>>>>> ffa35bb85d574d5d70560d8f68eaeea77a6ee381
+            echo 'CI Pipeline failed. Check Console Output.'
         }
     }
 }
