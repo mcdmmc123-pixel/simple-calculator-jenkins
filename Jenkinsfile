@@ -3,49 +3,49 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JDK 25'
-        maven 'Maven-3.10'
+        jdk 'JDK-21'
+        maven 'Maven-3.9.16'
     }
 
     stages {
-
-        stage('SCM Synchronization') {
+        stage('Checkout') {
             steps {
-                echo 'Pulling latest code from GitHub...'
                 checkout scm
             }
         }
 
-        stage('Static Verification') {
+        stage('Verify Tools') {
             steps {
-                echo 'Validating Maven project...'
+                bat 'java -version'
+                bat 'mvn -version'
+            }
+        }
+
+        stage('Maven Validation') {
+            steps {
                 bat 'mvn validate'
             }
         }
 
-        stage('Compilation & Automated Testing') {
+        stage('Build and Test') {
             steps {
-                echo 'Compiling Java code and running JUnit tests...'
                 bat 'mvn clean package'
-            }
-
-            post {
-                always {
-                    echo 'Publishing JUnit test results...'
-                    junit allowEmptyResults: true,
-                          testResults: '**/target/surefire-reports/*.xml'
-                }
             }
         }
     }
 
     post {
+        always {
+            junit allowEmptyResults: true,
+                  testResults: '**/target/surefire-reports/*.xml'
+        }
+
         success {
-            echo 'CI Pipeline completed successfully!'
+            echo 'Build completed successfully!'
         }
 
         failure {
-            echo 'CI Pipeline failed. Check Console Output.'
+            echo 'Build failed. Check the console output.'
         }
     }
 }
