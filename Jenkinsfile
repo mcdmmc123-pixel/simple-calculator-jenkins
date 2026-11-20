@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JDK-21'
+        jdk 'JDK 25'
         maven 'Maven-3.9.16'
     }
 
@@ -39,11 +39,9 @@ pipeline {
             junit allowEmptyResults: true,
                   testResults: '**/target/surefire-reports/*.xml'
         }
-
         success {
             echo 'Build completed successfully!'
         }
-
         failure {
             echo 'Build failed. Check the console output.'
         }
