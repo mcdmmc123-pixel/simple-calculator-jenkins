@@ -11,7 +11,7 @@ pipeline {
 
         stage('SCM Synchronization') {
             steps {
-                echo 'Pulling latest code from GitHub...'
+                echo 'Checking out latest GitHub code...'
                 checkout scm
             }
         }
@@ -25,12 +25,11 @@ pipeline {
 
         stage('Compilation & Automated Testing') {
             steps {
-                echo 'Compiling and running JUnit tests...'
+                echo 'Compiling Java and running JUnit tests...'
                 bat 'mvn clean package'
             }
             post {
                 always {
-                    echo 'Publishing JUnit test results...'
                     junit allowEmptyResults: true,
                           testResults: '**/target/surefire-reports/*.xml'
                 }
@@ -40,6 +39,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Starting SonarQube analysis...'
+
                 withSonarQubeEnv('SonarQube-Local') {
                     bat 'mvn sonar:sonar'
                 }
@@ -48,14 +48,14 @@ pipeline {
 
         stage('Docker Image Build') {
             steps {
-                echo 'Building Docker image...'
+                echo 'Building Calculator Docker image...'
                 bat 'docker build -t simple-calculator:1.0 .'
             }
         }
 
         stage('Docker Container Execution') {
             steps {
-                echo 'Running Calculator inside Docker...'
+                echo 'Running Calculator Docker container...'
                 bat 'docker run --rm simple-calculator:1.0'
             }
         }
@@ -63,11 +63,11 @@ pipeline {
 
     post {
         success {
-            echo 'Build, Testing, SonarQube and Docker completed successfully!'
+            echo 'Maven, JUnit, SonarQube and Docker completed successfully!'
         }
 
         failure {
-            echo 'Pipeline failed. Check Console Output.'
+            echo 'Pipeline failed. Check the failed stage in Console Output.'
         }
     }
 }
